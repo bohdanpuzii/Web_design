@@ -1,0 +1,66 @@
+{% extends "base_navbar.html" %}
+{% block content %}
+{% if messages %}
+{% for message in messages %}
+<div class="alert alert-{{message.tags}} m-2" id='msg' role="alert">
+    {{ message }}
+    <a href="" class="del-msg">&times;</a>
+</div>
+{% endfor %}
+{% endif %}
+<div class="container">
+    <div class="card text-white bg-secondary mb-3 container" style="max-width: 400px;">
+        <div class="card-body">
+            <h1>{{Profile.username}}</h1>
+            {% if Profile.avatar %}
+            <img src="{{Profile.avatar.url}}" width="350px">
+            {% endif %}
+            <h1>Bio:{{Profile.bio}}</h1>
+        </div>
+    </div>
+    {% if  able_to_follow %}
+    <div id="follow{{Profile.id}}" class="d-flex justify-content-center">
+        <button data-catid="{{Profile.id}}" class="btn btn-secondary" name="follow">
+            <span>
+                {% if followed %}
+                    Unfollow
+                {% else %}
+                    Follow
+                {% endif %}
+        </span>
+        </button>
+    </div>
+    {% endif %}
+    <div class="container" style="max-width:400px">
+        <h1>{{Profile.username}}`s photos</h1><br>
+    </div>
+    {% if Photo is not None %}
+    {% for photo in Photo %}
+    <div id="{{photo.id}}" class="card text-white bg-secondary mb-3 container" style="max-width: 400px;">
+        <div class="card-header"><a href="{% url 'profile' profile_id=photo.profile.id %}" class="text-white bg-dark">
+            {{photo.profile.username}} </a>
+        </div>
+        <img class="card-img-top" src="{{photo.photo.url}}" alt="Card image cap">
+        <div class="card-body">
+            <h5 class="card-title">{{photo.text}}</h5>
+            <p class="card-text">{{photo.date}}</p>
+        </div>
+        <div id="like{{photo.id}}">
+            <button data-catid="{{photo.id}}" class="btn btn-success like-btn" name="like"> like</button>
+            <span>{{photo.likes}}</span>
+        </div>
+        <div id="unlike{{photo.id}}">
+            <button data-catid="{{photo.id}}" class="btn btn-danger dislike-btn " name="unlike"> unlike</button>
+            <span>{{photo.unlikes}}</span>
+        </div>
+    </div>
+</div>
+{% endfor %}
+{% endif %}
+<script src="https://code.jquery.com/jquery-3.4.1.js" integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
+        crossorigin="anonymous"></script>
+{% csrf_token %}
+{% load static %}
+<script src="{% static 'follow.js' %}"></script>
+<script src="{% static 'likes.js' %}"></script>
+{% endblock %}
